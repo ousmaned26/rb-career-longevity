@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premature Career Termination in NFL Running Backs</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{--bg:#030712;--p1:#111827;--p2:#1f2937;--line:#374151;--line2:#4b5563;--t1:#f3f4f6;--t2:#e5e7eb;--t3:#d1d5db;--t4:#9ca3af;--t5:#6b7280;}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--t2);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:896px;margin:0 auto;padding:0 16px}
+  header.top{background:var(--p1);border-bottom:1px solid var(--line);padding:22px 0}
+  .journal{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--t5);margin-bottom:10px}
+  h1{font-size:22px;line-height:1.35;margin:0;color:var(--t1);font-weight:700}
+  .kw{font-size:12px;color:var(--line2);margin:10px 0 0;line-height:1.5}
+  nav.tabs{background:var(--p1);border-bottom:1px solid var(--p2);padding:8px 0;position:sticky;top:0;z-index:10}
+  #tabBar{display:flex;flex-wrap:wrap;gap:4px}
+  .tab{background:var(--p2);color:var(--t5);border:1px solid var(--line);border-radius:4px;padding:5px 10px;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,color .15s;font-family:inherit}
+  .tab:hover{background:var(--line);color:var(--t3)}
+  .tab.active{background:var(--line2);color:var(--t1);border-color:var(--line2)}
+  main{padding-top:24px;padding-bottom:24px}
+  .sec{display:none}
+  .sec.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2{font-size:15px;font-weight:700;color:var(--t1);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line2);padding-bottom:5px;margin:6px 0 14px}
+  h3{font-size:11.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px}
+  .sub{font-size:13px;color:var(--t3);margin:24px 0 8px;font-weight:600}
+  p{color:var(--t4);font-size:14px;line-height:1.7;margin:0 0 12px}
+  p b,li b{color:var(--t2)}
+  sup{color:var(--t5);font-size:10px}
+  .card{background:var(--p1);border:1px solid var(--line);border-radius:6px;padding:16px;margin:16px 0}
+  .cap{font-size:12px;color:var(--t5);margin:0 0 10px;line-height:1.55}
+  .note{font-size:11.5px;color:var(--t5);margin:10px 0 0;line-height:1.55}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+  .stat{background:var(--p1);border:1px solid var(--line);border-radius:6px;padding:12px 8px;text-align:center}
+  .stat .v{font-size:18px;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums}
+  .stat .l{font-size:12px;color:var(--t4);margin-top:4px;line-height:1.35}
+  .stat .s{font-size:11px;color:var(--line2);margin-top:3px;line-height:1.35}
+  .abstract .stat{background:var(--bg)}
+  .chart{position:relative;height:250px}
+  .tblwrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{text-align:left;color:var(--t4);font-weight:700;border-bottom:1px solid var(--line2);padding:8px;white-space:nowrap}
+  td{color:var(--t4);border-bottom:1px solid var(--p2);padding:8px;vertical-align:top;line-height:1.45}
+  tbody tr:nth-child(odd){background:var(--bg)}
+  tbody tr:hover{background:#0b1220}
+  .n{text-align:right;font-variant-numeric:tabular-nums}
+  td.hi{color:var(--t2);font-weight:600}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--t2)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  .mini{background:var(--p1);border:1px solid var(--line);border-radius:6px;padding:12px}
+  .mini .t{color:var(--t3);font-weight:600;font-size:12px;margin-bottom:6px}
+  .mini p{font-size:12px;margin:0;line-height:1.55}
+  .abstract{background:var(--p1);border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:6px;padding:18px 20px}
+  .quote{border-left:2px solid var(--line2);padding-left:16px;margin:16px 0}
+  ol.clean,ul.clean{margin:4px 0 0;padding-left:20px;color:var(--t4);font-size:13.5px;line-height:1.65}
+  ol.clean li,ul.clean li{margin-bottom:6px}
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .slider{margin-bottom:14px}
+  .slider label{display:flex;justify-content:space-between;font-size:12px;color:var(--t4);margin-bottom:5px}
+  .slider label span{color:var(--t1);font-weight:600;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:#9ca3af;cursor:pointer}
+  .out{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .out .stat{background:var(--bg);padding:10px 6px}
+  .out .stat .v{font-size:15px}
+  .out .stat .l{font-size:11px}
+  .readout{font-size:13px;color:var(--t3);margin:10px 0 0}
+  .refs{list-style:none;padding:0;margin:0}
+  .refs li{display:flex;gap:12px;border-bottom:1px solid var(--p2);padding:8px 0;font-size:12.5px;color:var(--t5);line-height:1.5}
+  .refs .num{color:var(--t5);font-weight:700;min-width:28px}
+  .refs b{color:var(--t3);font-weight:600}
+  pre{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:12px;font-size:11.5px;color:var(--t4);overflow:auto;max-height:300px;margin:0;line-height:1.5}
+  .btn{background:var(--p2);border:1px solid var(--line);color:var(--t3);border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+  .btn:hover:not(:disabled){background:var(--line)}
+  .btn:disabled{opacity:.3;cursor:default}
+  .rowhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+  .rowhead h3{margin:0}
+  .pager{display:flex;justify-content:space-between;gap:8px;margin-top:28px;padding-top:16px;border-top:1px solid var(--p2)}
+  footer{text-align:center;color:var(--line);font-size:12px;padding:16px;border-top:1px solid var(--p2);margin-top:8px}
+  .fallback{color:var(--t5);font-size:12px;border:1px dashed var(--line);border-radius:4px;padding:24px;text-align:center}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.grid2,.calc{grid-template-columns:1fr}h1{font-size:18px}}
+  @media print{nav.tabs,.pager{display:none}.sec{display:block!important;page-break-after:always}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="journal">Working Draft · Independent Research Project · September 2026</div>
+    <h1>Premature Career Termination in NFL Running Backs: A Multi-Domain Analysis of Biomechanical Load, Neurological Risk, Workload Concentration, and Economic Devaluation</h1>
+    <p class="kw">Keywords: NFL running back · career longevity · collision biomechanics · CTE · workload · survival analysis · collective bargaining</p>
+  </div>
+</header>
+
+<nav class="tabs"><div class="wrap" id="tabBar"></div></nav>
+
+<main class="wrap">
+
+<!-- ================= ABSTRACT ================= -->
+<section class="sec" id="abstract" data-title="Abstract">
+  <div class="abstract">
+    <h3>Abstract</h3>
+    <p>Running backs (RBs) have the shortest average career of any NFL position, commonly reported as roughly 2.57 seasons against a league-wide average near 3.3. This paper examines four mechanisms that plausibly compound to produce that gap: (1) biomechanical load from repeated high-velocity collisions, (2) neurological risk from repetitive head impacts, (3) workload concentration and its relationship to post-peak decline, and (4) a labor structure that pays RBs least during their most productive years. First-principles modeling indicates that a 95 kg RB stopped from 8 m/s experiences an average decelerating force of roughly 2,500–15,000 N, depending on contact duration, and dissipates kinetic energy equivalent to a free fall of about 3.3 m. Brain bank data show CTE in 345 of 376 former NFL players examined, although selection bias prevents this figure from being read as a prevalence rate. Each additional year of football play is associated with roughly 30% higher odds of CTE. Economically, the RB franchise tag fell from 8th to 10th of 11 positions between 2011 and 2025 while the salary cap rose sharply. We argue that these mechanisms interact: physical decline and the loss of contract leverage arrive at nearly the same age, approximately 26–28. The paper concludes with four testable hypotheses for a longitudinal dataset covering 1985 to the present.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">~2.57 yrs</div><div class="l">Avg RB career</div><div class="s">vs ~3.3 league avg</div></div>
+      <div class="stat"><div class="v">345 / 376</div><div class="l">CTE in NFL brain donors</div><div class="s">BU CTE Center, 2023</div></div>
+      <div class="stat"><div class="v">~1.3×</div><div class="l">CTE odds per added year</div><div class="s">Dose-response</div></div>
+      <div class="stat"><div class="v">10th / 11</div><div class="l">RB franchise tag rank</div><div class="s">2025</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Interactive features</h3>
+    <p style="font-size:13px;margin:0">Navigate with the tabs, the buttons at the bottom of each section, or the ← → arrow keys. Hover over any chart for exact values. <b>§2</b> includes a collision calculator that updates Figure 3 live. <b>§3</b> includes an adjustable injury-risk model. <b>References</b> includes a one-click CSV download for Excel.</p>
+  </div>
+</section>
+
+<!-- ================= INTRODUCTION ================= -->
+<section class="sec" id="intro" data-title="Introduction">
+  <h2>1. Introduction</h2>
+  <p>The running back occupies a uniquely punishing role in professional football. On most carries the RB accelerates into a congested line of scrimmage, changes direction under load, and is brought to a stop by one or more defenders, often weighing 200–320 lb. Unlike receivers, who absorb contact intermittently, or linemen, who absorb frequent but lower-velocity contact, the RB combines high contact frequency with high contact velocity.</p>
+  <p>Career-length data reflect this. The RB position is commonly reported to have the shortest average tenure in the league, roughly 2.57 seasons versus a league-wide mean near 3.3<sup>[1,2]</sup>. At the same time, the position's market value has declined. Analysts point to pass-heavy offenses, committee backfields, and a rookie wage scale that concentrates RB production in cheap early-career contracts<sup>[3,4]</sup>.</p>
+  <div class="quote">
+    <p style="margin:0"><b>Thesis.</b> RB careers end early because physical, neurological, and economic pressures converge on the same window. The body begins to decline at roughly the age when the player first gains contract leverage, so the market has little incentive to pay for the years that remain.</p>
+  </div>
+  <div class="card">
+    <h3>Research questions</h3>
+    <ol class="clean">
+      <li><b>RQ1.</b> How large are the mechanical loads an RB absorbs per carry and per season, and how do they scale with workload?</li>
+      <li><b>RQ2.</b> What does current evidence say about head-impact exposure and long-term neurological risk, and what can and cannot be concluded about RBs specifically?</li>
+      <li><b>RQ3.</b> Has RB workload concentration changed by decade, and is extreme single-season volume associated with subsequent decline?</li>
+      <li><b>RQ4.</b> How does the NFL's contract structure interact with the RB aging curve?</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>Figure 1 — Reported Average Career Length by Position</h3>
+    <p class="cap">Source: Statista / NFLPA; Footballguys<sup>[1,2]</sup>. The league average is shown in darker gray.</p>
+    <div class="chart"><canvas id="figPos"></canvas></div>
+  </div>
+</section>
+
+<!-- ================= METHODS ================= -->
+<section class="sec" id="methods" data-title="Methods">
+  <h2>2. Methods &amp; Data Sources</h2>
+  <p><b>Design.</b> This study combines three approaches: (a) a narrative synthesis of peer-reviewed and institutional literature, (b) first-principles physical modeling using Newtonian mechanics with explicitly stated assumptions, and (c) a proposed longitudinal analysis of player-season data from 1985 to the present, framed as testable hypotheses in the Conclusion.</p>
+  <div class="grid2">
+    <div class="mini"><div class="t">Career Length</div><p>Statista / NFLPA; Footballguys. Average tenure by position.</p></div>
+    <div class="mini"><div class="t">Player-Season Stats</div><p>Pro-Football-Reference; nflverse (nfl-data-py). Carries, age, games, and debut year, 1985–present.</p></div>
+    <div class="mini"><div class="t">Contracts</div><p>Over The Cap; Spotrac. Cap hits, APY, and franchise tags.</p></div>
+    <div class="mini"><div class="t">Head Impacts</div><p>Crisco et al. (2011); Pellman et al. (2003). Impact magnitude and frequency by position.</p></div>
+    <div class="mini"><div class="t">CTE</div><p>BU CTE Center (2023); VA-BU-CLF selection-bias analysis; Mez et al.; Daneshvar et al. (2023); Grashow et al. (2024).</p></div>
+    <div class="mini"><div class="t">Labor Market</div><p>Chicago Policy Review (2024); ESPN / Barnwell (2023); AP via Fox Sports (2025); GiveMeSport (2024).</p></div>
+  </div>
+  <p><b>Physical model assumptions.</b> RB mass <i>m</i> = 95 kg (≈210 lb). Velocity at contact <i>v</i> = 6–8 m/s (≈13–18 mph), with top speed near 9 m/s. Contact duration Δ<i>t</i> = 0.05–0.30 s. <i>g</i> = 9.81 m/s². Bodies are treated as rigid, and forces are reported as averages over the contact interval unless stated otherwise.</p>
+  <div class="card">
+    <h3>Table 1 — Equations Used</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Equation</th><th>Quantity</th><th>Worked example (95 kg RB)</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">p = mv</td><td>Momentum</td><td class="hi">95 × 8 = 760 kg·m/s</td></tr>
+        <tr><td class="mono">F = mΔv / Δt</td><td>Average stopping force</td><td class="hi">760 / 0.25 = 3,040 N (≈683 lbf)</td></tr>
+        <tr><td class="mono">F_peak ≈ (π/2)·F_avg</td><td>Peak force, half-sine pulse</td><td class="hi">3,040 × 1.57 ≈ 4,775 N</td></tr>
+        <tr><td class="mono">KE = ½mv²</td><td>Kinetic energy</td><td class="hi">½ × 95 × 8² = 3,040 J</td></tr>
+        <tr><td class="mono">h = v² / 2g</td><td>Equivalent free-fall height</td><td class="hi">8² / 19.62 = 3.26 m</td></tr>
+        <tr><td class="mono">P(n) = 1 − (1 − p)ⁿ</td><td>Cumulative probability over n seasons</td><td class="hi">p = 0.20, n = 3 → 48.8%</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= §1 LONGEVITY ================= -->
+<section class="sec" id="longevity" data-title="§1 Career Longevity">
+  <h2>§1 — Career Longevity: Positional Attrition &amp; Survivorship</h2>
+  <p>Reported averages place RBs at the bottom of positional career length. Quarterbacks and kickers/punters, positions with far less contact exposure, sit at the top<sup>[1,2]</sup>. Averages, however, are a weak summary statistic here. Career-length distributions are heavily right-skewed: a large share of players appear for one season or less, while a few last more than a decade. Medians and survival curves describe attrition far better than means.</p>
+  <p>Performance data show a similarly compressed prime. Standout RB seasons cluster tightly around ages 24–26, and that clustering has tightened since 2010, while quarterbacks have gained longevity<sup>[3]</sup>. The labor market reflects this. In the summer of 2023, Dalvin Cook, Ezekiel Elliott, and Kareem Hunt (all 27) and Leonard Fournette (28) were unsigned, at an age when players at other positions are considered to be in their primes<sup>[4]</sup>.</p>
+  <div class="stats">
+    <div class="stat"><div class="v">~2.57 yrs</div><div class="l">Avg RB career</div><div class="s">Reported average</div></div>
+    <div class="stat"><div class="v">24–26</div><div class="l">Peak season ages</div><div class="s">Chicago Policy Review</div></div>
+    <div class="stat"><div class="v">~28</div><div class="l">Decline onset</div><div class="s">Reported onset</div></div>
+    <div class="stat"><div class="v">27–28</div><div class="l">Age of 2023 veteran releases</div><div class="s">ESPN, 2023</div></div>
+  </div>
+  <div class="card">
+    <h3>Figure 2 — Illustrative RB Aging Curve (Peak = 100)</h3>
+    <p class="cap">Modeled estimate. The shape reflects the reported peak window (24–26) and decline onset (~28). It is illustrative and not fitted to player data.</p>
+    <div class="chart"><canvas id="figAge"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Table 2 — Longest-Tenured Elite Rushers (Survivorship Bias)</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Player</th><th>Seasons</th><th class="n">Yrs</th><th class="n">Att</th><th class="n">Rush Yds</th><th class="n">YPC</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">Emmitt Smith</td><td>1990–2004</td><td class="n">15</td><td class="n">4,409</td><td class="n">18,355</td><td class="n">4.2</td></tr>
+        <tr><td class="hi">Walter Payton</td><td>1975–1987</td><td class="n">13</td><td class="n">3,838</td><td class="n">16,726</td><td class="n">4.4</td></tr>
+        <tr><td class="hi">Frank Gore</td><td>2005–2020</td><td class="n">16</td><td class="n">3,735</td><td class="n">16,000</td><td class="n">4.3</td></tr>
+        <tr><td class="hi">Barry Sanders</td><td>1989–1998</td><td class="n">10</td><td class="n">3,062</td><td class="n">15,269</td><td class="n">5.0</td></tr>
+        <tr><td class="hi">Adrian Peterson</td><td>2007–2021</td><td class="n">15</td><td class="n">3,230</td><td class="n">14,918</td><td class="n">4.6</td></tr>
+        <tr><td class="hi">Curtis Martin</td><td>1995–2005</td><td class="n">11</td><td class="n">3,518</td><td class="n">14,101</td><td class="n">4.0</td></tr>
+        <tr><td class="hi">LaDainian Tomlinson</td><td>2001–2011</td><td class="n">11</td><td class="n">3,174</td><td class="n">13,684</td><td class="n">4.3</td></tr>
+        <tr><td class="hi">Jerome Bettis</td><td>1993–2005</td><td class="n">13</td><td class="n">3,479</td><td class="n">13,662</td><td class="n">3.9</td></tr>
+        <tr><td class="hi">Eric Dickerson</td><td>1983–1993</td><td class="n">11</td><td class="n">2,996</td><td class="n">13,259</td><td class="n">4.4</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Source: Pro-Football-Reference<sup>[16]</sup>. Rankings as of the end of the 2024 season. These players are survivors, not the typical case: their 10–16-year careers are four to six times the positional average, so analyses built only on famous backs overstate RB durability.</p>
+  </div>
+</section>
+
+<!-- ================= §2 BIOMECHANICS ================= -->
+<section class="sec" id="biomech" data-title="§2 Biomechanics">
+  <h2>§2 — Biomechanical Load: Force, Momentum &amp; Kinetic Energy</h2>
+  <div class="stats">
+    <div class="stat"><div class="v">1,860–2,800 N</div><div class="l">Peak GRF per step</div><div class="s">2–3× body weight</div></div>
+    <div class="stat"><div class="v">3,040 J</div><div class="l">KE at 8 m/s</div><div class="s">95 kg RB</div></div>
+    <div class="stat"><div class="v">3.26 m</div><div class="l">Equivalent fall height</div><div class="s">Per contact at 8 m/s</div></div>
+    <div class="stat"><div class="v">~7,300 N</div><div class="l">Head-on example (avg)</div><div class="s">Δt = 0.10 s</div></div>
+  </div>
+  <p class="sub">2.1 Ground reaction forces</p>
+  <p>Even without contact, sprinting loads the lower extremities heavily. Peak vertical ground reaction force during fast running is on the order of 2–3 times body weight per foot strike<sup>[7]</sup>. For a 95 kg back (body weight ≈ 932 N), that is roughly 1,860–2,800 N per step. Cutting maneuvers add large lateral and rotational components at the knee, the loading pattern most associated with non-contact ACL injury.</p>
+  <p class="sub">2.2 Collision forces</p>
+  <p>The average force required to stop a moving RB depends on his momentum and the duration of contact. Because contact duration is poorly constrained, force is reported across a plausible range rather than as a single number.</p>
+  <div class="card">
+    <h3>Table 3 — Stopping Force, 95 kg RB at 8 m/s (p = 760 kg·m/s)</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th class="n">Δt (s)</th><th class="n">Avg force (N)</th><th class="n">Avg force (lbf)</th><th class="n">Est. peak, half-sine (N)</th><th class="n">× Body weight</th></tr></thead>
+      <tbody id="forceTable"></tbody>
+    </table></div>
+    <p class="note">Assumes the RB is brought to a complete stop by a single rigid contact. Peak force for a half-sine pulse is about π/2 times the average.</p>
+  </div>
+  <div class="card">
+    <h3>Figure 3 — Stopping Force vs. Contact Duration</h3>
+    <p class="cap">Modeled estimate. Force scales with 1/Δt, so short, stiff collisions are disproportionately severe. This chart updates with the calculator below.</p>
+    <div class="chart"><canvas id="figForce"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Interactive — Collision Calculator</h3>
+    <div class="calc">
+      <div>
+        <div class="slider"><label>RB mass <span id="mOut"></span></label><input type="range" id="mIn" min="80" max="115" step="1" value="95"></div>
+        <div class="slider"><label>Velocity at contact <span id="vOut"></span></label><input type="range" id="vIn" min="4" max="10" step="0.1" value="8"></div>
+        <div class="slider"><label>Contact duration <span id="tOut"></span></label><input type="range" id="tIn" min="0.03" max="0.40" step="0.01" value="0.10"></div>
+        <div class="slider"><label>Carries per season <span id="cOut"></span></label><input type="range" id="cIn" min="100" max="420" step="5" value="300"></div>
+      </div>
+      <div class="out">
+        <div class="stat"><div class="v" id="rP"></div><div class="l">Momentum (kg·m/s)</div></div>
+        <div class="stat"><div class="v" id="rKE"></div><div class="l">Kinetic energy (J)</div></div>
+        <div class="stat"><div class="v" id="rF"></div><div class="l">Avg force (N)</div></div>
+        <div class="stat"><div class="v" id="rFpk"></div><div class="l">Est. peak force (N)</div></div>
+        <div class="stat"><div class="v" id="rBW"></div><div class="l">× Body weight (avg)</div></div>
+        <div class="stat"><div class="v" id="rH"></div><div class="l">Equivalent fall (m)</div></div>
+        <div class="stat" style="grid-column:span 2"><div class="v" id="rSeason"></div><div class="l">Energy dissipated per season (assumes every carry ends in contact)</div></div>
+      </div>
+    </div>
+  </div>
+  <p><b>Head-on example.</b> Consider an RB (95 kg, 8 m/s) meeting a defender (100 kg, 7 m/s) head-on. If the collision is perfectly inelastic, the combined mass moves at (760 − 700) / 195 ≈ 0.31 m/s in the RB's direction. The RB's velocity change is therefore ≈ 7.7 m/s. Over 0.10 s, that is an average force of ≈ 7,300 N (≈ 1,640 lbf), with an estimated peak near 11,500 N.</p>
+  <p class="sub">2.3 Energy per carry</p>
+  <p>Kinetic energy grows with the square of velocity, so small increases in contact speed raise the energy that must be dissipated by tissue, pads, and turf disproportionately. Expressing that energy as an equivalent free-fall height makes it intuitive.</p>
+  <div class="card">
+    <h3>Table 4 — Kinetic Energy &amp; Equivalent Drop Height (95 kg)</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th class="n">Velocity (m/s)</th><th class="n">Velocity (mph)</th><th class="n">KE (J)</th><th class="n">Equivalent fall (m)</th><th class="n">Equivalent fall (ft)</th></tr></thead>
+      <tbody id="keTable"></tbody>
+    </table></div>
+    <p class="note">At a typical 8 m/s contact speed, each tackle dissipates about the same energy as a fall from roughly one story (≈3.3 m, 10.7 ft).</p>
+  </div>
+  <div class="card">
+    <h3>Figure 4 — Estimated Energy Dissipated per Season by Carry Volume</h3>
+    <p class="cap">Modeled estimate. Assumes every carry ends in contact at 6 m/s (1,710 J per carry). This overstates carries that end out of bounds and understates carries that involve multiple hits.</p>
+    <div class="chart"><canvas id="figSeason"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Methodological Note — Joint-Level Stress</h3>
+    <p style="font-size:13px;margin:0">Dividing whole-body collision force by a joint's contact area (σ = F/A) does not yield a valid estimate of knee pressure. Collision force is distributed across the body, and padding, soft tissue, and joint angle all change what reaches any single surface. Joint contact stress is therefore not estimated in this model.</p>
+  </div>
+</section>
+
+<!-- ================= §3 WORKLOAD ================= -->
+<section class="sec" id="workload" data-title="§3 Workload">
+  <h2>§3 — Workload Concentration &amp; the Overuse Hypothesis</h2>
+  <p>Workhorse usage peaked in the 2000s. The single-season carry record (416) was set in 2006, and ten players topped 300 carries that year. In 2024, six players did, led by Saquon Barkley's 345, even though the season was one game longer<sup>[5]</sup>. Over the same period the league has tilted toward passing: the average pass/run split moved from about 53/47 in 2003 to about 58/42<sup>[3]</sup>.</p>
+  <div class="stats">
+    <div class="stat"><div class="v">416</div><div class="l">Single-season carry record</div><div class="s">L. Johnson, 2006</div></div>
+    <div class="stat"><div class="v">10 → 6</div><div class="l">300-carry seasons</div><div class="s">2006 vs 2024</div></div>
+    <div class="stat"><div class="v">53/47 → 58/42</div><div class="l">Pass/run split</div><div class="s">2003 → recent</div></div>
+    <div class="stat"><div class="v">370+</div><div class="l">"Curse" threshold</div><div class="s">Hypothesis, see below</div></div>
+  </div>
+  <div class="card">
+    <h3>Table 5 — Highest Single-Season Carry Total by Decade</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Decade</th><th class="n">Max carries</th><th>Player (year)</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">1980s</td><td class="n hi">407</td><td>James Wilder (1984)</td></tr>
+        <tr><td class="hi">1990s</td><td class="n hi">410</td><td>Jamal Anderson (1998)</td></tr>
+        <tr><td class="hi">2000s</td><td class="n hi">416</td><td>Larry Johnson (2006)</td></tr>
+        <tr><td class="hi">2010s</td><td class="n hi">392</td><td>DeMarco Murray (2014)</td></tr>
+        <tr><td class="hi">2020s*</td><td class="n hi">378</td><td>Derrick Henry (2020)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Source: Pro-Football-Reference. *2020s through the 2024 season. Seasons were 16 games until 2021 and 17 after, which affects cross-era comparisons.</p>
+  </div>
+  <div class="card">
+    <h3>Figure 5 — Highest Single-Season Carry Total by Decade</h3>
+    <p class="cap">The peak-volume era was the 1990s–2000s, with a decline in the pass-first era.</p>
+    <div class="chart"><canvas id="figDecade"></canvas></div>
+  </div>
+  <p class="sub">3.1 The "Curse of 370" hypothesis</p>
+  <p>Football Outsiders popularized the claim that RBs who log 370 or more carries in a season tend to decline or get injured the following year<sup>[19]</sup>. Frequently cited cases include Jamal Anderson (410 carries in 1998, torn ACL in 1999), Larry Johnson (416 in 2006, sharply reduced role in 2007), and Shaun Alexander (370 in his 2005 MVP season, broken foot in 2006). Critics raise two alternative explanations. The first is regression to the mean: backs who reach 370 carries are often coming off career-best seasons, so some decline is expected regardless of workload. The second is age: many were already near 28. Counterexamples such as Eric Dickerson and Emmitt Smith, who posted repeated high-volume seasons, also exist. The hypothesis is testable and is framed as H2 in the Conclusion.</p>
+  <p class="sub">3.2 Compounding injury probability</p>
+  <p>If <i>p</i> is the probability of a career-altering injury in any season, and seasons are independent, the probability of at least one such injury after <i>n</i> seasons is 1 − (1 − <i>p</i>)ⁿ. Because the true annual rate for RBs is not established, Figure 6 allows it to vary. Independence is likely violated, because prior injury raises future injury risk, so the true curve is probably steeper than the model predicts.</p>
+  <div class="card">
+    <h3>Figure 6 — Interactive Cumulative Injury-Risk Model</h3>
+    <p class="cap">Modeled estimate. Drag the slider to set a hypothetical annual rate.</p>
+    <div class="slider"><label>Assumed annual probability of career-altering injury (p) <span id="pOut"></span></label><input type="range" id="pIn" min="5" max="40" step="1" value="20"></div>
+    <div class="chart"><canvas id="figInjury"></canvas></div>
+    <p class="readout" id="pRead"></p>
+  </div>
+</section>
+
+<!-- ================= §4 NEUROLOGICAL ================= -->
+<section class="sec" id="neuro" data-title="§4 Neurological">
+  <h2>§4 — Neurological Risk: Head Impacts &amp; CTE</h2>
+  <p class="sub" style="margin-top:0">4.1 Head-impact exposure</p>
+  <p>Helmet-accelerometer studies show that positions differ in both the frequency and the magnitude of head impacts. In collegiate data, linemen and linebackers sustain the most impacts, while RBs and quarterbacks sustain the highest-magnitude impacts<sup>[8]</sup>. Reconstructions of concussive NFL impacts from game video reported mean peak linear accelerations near 98 g and rotational accelerations near 6,400 rad/s²<sup>[9]</sup>.</p>
+  <p>The strongest recent evidence suggests that cumulative exposure, not diagnosed concussions, drives long-term pathology. An NIH-funded team pooled accelerometer data from 34 studies to build a positional exposure matrix estimating per-season head impacts by position and level of play. They applied it to 631 male brain donors who had played football, who averaged about 12 years of play and died at an average age of about 60; roughly 28% showed no CTE. The authors concluded that repeated non-concussive impacts are a major driver of CTE pathology<sup>[13]</sup>.</p>
+  <div class="stats">
+    <div class="stat"><div class="v">345 / 376</div><div class="l">CTE in NFL brain donors</div><div class="s">Not a prevalence rate</div></div>
+    <div class="stat"><div class="v">1 / 164</div><div class="l">CTE, community brain bank</div><div class="s">BU, 2018</div></div>
+    <div class="stat"><div class="v">~30%</div><div class="l">Higher odds per year played</div><div class="s">Mez et al., 2020</div></div>
+    <div class="stat"><div class="v">35%</div><div class="l">Former players who believe they have CTE</div><div class="s">N ≈ 2,000, 2024</div></div>
+  </div>
+  <p class="sub">4.2 Chronic traumatic encephalopathy</p>
+  <p>The Boston University CTE Center has diagnosed CTE in 345 of 376 former NFL players studied (91.7%). In a 2018 community brain bank comparison, 1 of 164 people (0.6%) had CTE, and that individual had played college football<sup>[10]</sup>. The Center itself cautions that the NFL figure does not mean 91.7% of players have CTE, because families of symptomatic players are more likely to donate<sup>[10]</sup>. A selection-bias-adjusted analysis of 290 donors found that college and professional players had about 2.4–2.5 times the risk of a CTE diagnosis compared with players whose highest level was lower<sup>[11]</sup>. Duration of play shows a dose-response relationship: each additional year is associated with roughly 30% higher odds of CTE, equivalent to the odds doubling about every 2.6 years<sup>[12]</sup>.</p>
+  <div class="card">
+    <h3>Figure 7 — Relative Odds of CTE Diagnosis by Years Played</h3>
+    <p class="cap">Modeled estimate derived from the reported doubling interval of about 2.6 years. These are odds multipliers, not probabilities. They come from a brain bank sample and should not be generalized to all players.</p>
+    <div class="chart"><canvas id="figCTE"></canvas></div>
+  </div>
+  <p class="sub">4.3 Living former players</p>
+  <p>In a survey of nearly 2,000 former NFL players, about 35% believed they had CTE. Those players reported more cognitive symptoms, depression, headaches, chronic pain, and low testosterone. They also reported frequent suicidal thoughts at 25% versus 5% among players without that belief, and remained about twice as likely to do so after accounting for depressive symptoms<sup>[14]</sup>. The authors emphasize that many conditions common in former players, including sleep apnea, low testosterone, hypertension, and chronic pain, are treatable and can themselves impair cognition<sup>[14]</sup>.</p>
+  <div class="card">
+    <h3>Table 6 — Neurological Evidence Summary</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Finding</th><th>Value</th><th>Key caveat</th><th>Ref</th></tr></thead>
+      <tbody>
+        <tr><td>CTE in NFL brain donors</td><td class="hi">345/376 (91.7%)</td><td>Donor sample; not a prevalence rate</td><td>[10]</td></tr>
+        <tr><td>CTE in community brain bank</td><td class="hi">1/164 (0.6%)</td><td>Only case had played college football</td><td>[10]</td></tr>
+        <tr><td>Risk ratio, college / pro vs. lower levels</td><td class="hi">2.38 / 2.47</td><td>Wide simulation intervals</td><td>[11]</td></tr>
+        <tr><td>Odds increase per year played</td><td class="hi">~30%</td><td>Odds, not risk; donor sample</td><td>[12]</td></tr>
+        <tr><td>Primary driver of pathology</td><td class="hi">Cumulative non-concussive impacts</td><td>Exposure estimated by position, not measured per player</td><td>[13]</td></tr>
+        <tr><td>Co-occurring neurodegenerative disease</td><td class="hi">~37% of ex-NFL players with CTE</td><td>Small samples</td><td>[15]</td></tr>
+        <tr><td>Former players believing they have CTE</td><td class="hi">35% of ~2,000</td><td>Self-report; CTE unconfirmable in life</td><td>[14]</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">No study cited here reports RB-specific CTE rates; the positional exposure matrix in [13] offers the most direct route to such an estimate.</p>
+  </div>
+</section>
+
+<!-- ================= §5 ECONOMICS ================= -->
+<section class="sec" id="econ" data-title="§5 Economics">
+  <h2>§5 — Economic Structure: The Rookie-Scale Timing Problem</h2>
+  <p>The 2011 CBA introduced a rookie wage scale with four-year contracts and a fifth-year team option for first-round picks. Most players enter the league at about 22, so RBs typically first become eligible for a second contract at 26 or 27, after most of their peak seasons have already been played at rookie-scale pay<sup>[3]</sup>. The result is a catch-22: producing at a level that earns a large extension also accumulates the wear that lowers the value of that extension<sup>[3]</sup>.</p>
+  <div class="stats">
+    <div class="stat"><div class="v">8th → 10th</div><div class="l">RB tag rank of 11</div><div class="s">2011 → 2025</div></div>
+    <div class="stat"><div class="v">~8.0% → ~4.3%</div><div class="l">RB tag as share of cap</div><div class="s">2011 → 2025</div></div>
+    <div class="stat"><div class="v">+$81M</div><div class="l">Salary cap growth</div><div class="s">Since 2020</div></div>
+    <div class="stat"><div class="v">55%</div><div class="l">RB share of all touches</div><div class="s">2023</div></div>
+  </div>
+  <div class="card">
+    <h3>Table 7 — Contract Status vs. Physical Trajectory (Typical Drafted RB)</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Age</th><th>Contract status</th><th>Physical / performance status</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">22</td><td>Rookie deal, year 1</td><td>Entering prime</td></tr>
+        <tr><td class="hi">23–24</td><td>Rookie deal, years 2–3</td><td>Approaching peak</td></tr>
+        <tr><td class="hi">25</td><td>Rookie deal, year 4</td><td>Peak window (24–26)</td></tr>
+        <tr><td class="hi">26</td><td>Fifth-year option (first round) or free agency</td><td>End of peak window</td></tr>
+        <tr><td class="hi">27–28</td><td>Second contract, if offered</td><td>Decline onset (~28)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Structural timeline based on CBA terms and reported aging patterns [3]; individual cases vary.</p>
+  </div>
+  <div class="card">
+    <h3>Table 8 — RB Franchise Tag, 2011 vs. 2025</h3>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Year</th><th class="n">RB tag (non-exclusive)</th><th>Rank of 11</th><th class="n">Salary cap</th><th class="n">Tag as % of cap</th></tr></thead>
+      <tbody>
+        <tr><td class="hi">2011</td><td class="n">$9.6M</td><td>8th</td><td class="n">~$120.4M</td><td class="n hi">~8.0%</td></tr>
+        <tr><td class="hi">2025</td><td class="n">~$12.0M</td><td>10th (only K/P lower, ~$6.5M)</td><td class="n">~$279.2M</td><td class="n hi">~4.3%</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Tag values and ranks: AP via Fox Sports [5]. The tag is calculated from the top-five salaries at each position.</p>
+  </div>
+  <div class="card">
+    <h3>Figure 8 — RB Franchise Tag as a Share of the Salary Cap</h3>
+    <p class="cap">The tag's nominal value rose 25% while its share of the cap nearly halved.</p>
+    <div class="chart" style="height:220px"><canvas id="figTag"></canvas></div>
+  </div>
+  <p>By 2024, average RB pay ranked above only punters, fullbacks, and long snappers, even though RBs received the largest share of total touches (55% in 2023)<sup>[6]</sup>. Proposed explanations include pass-first offenses, the replaceability of committee backfields, and quarterback running threats that inflate RB efficiency in ways teams do not pay for in free agency<sup>[3,4]</sup>.</p>
+  <p><b>Counterpoint.</b> The market is not uniformly flat. Barkley and Henry signed new deals in 2024, and Barkley's 2,000-yard season in Philadelphia, which ended in a Super Bowl title, was widely cited as renewing respect for the position<sup>[5]</sup>. Whether that marks a durable shift or a single outlier remains an open question.</p>
+</section>
+
+<!-- ================= CONCLUSION ================= -->
+<section class="sec" id="conclusion" data-title="Conclusion">
+  <h2>Conclusion</h2>
+  <div class="quote">
+    <p>The available evidence supports a convergence account of RB career length. <b>Mechanically</b>, each carry involves stopping forces in the thousands of newtons and energy comparable to a one-story fall, repeated hundreds of times per season. <b>Neurologically</b>, cumulative non-concussive impact exposure is increasingly identified as the main driver of CTE pathology, and risk rises with each year played. <b>Economically</b>, the rookie wage scale places an RB's first real contract leverage at the same age his production begins to fall, and the market has priced the position accordingly.</p>
+    <p style="margin:0">None of these mechanisms alone explains the gap; together they plausibly do. The hypotheses below turn that account into claims that can be falsified.</p>
+  </div>
+  <div class="card">
+    <h3>Testable Hypotheses for Future Research (1985–Present)</h3>
+    <ol class="clean">
+      <li><b>H1 — Wear vs. age.</b> Cumulative career touches predict the hazard of career exit independently of age.</li>
+      <li><b>H2 — Overuse cliff.</b> A season of 370+ carries predicts a larger next-season decline than regression to the mean alone.</li>
+      <li><b>H3 — Cohort trend.</b> RB survival curves have shifted downward across debut cohorts (1985–2020) relative to other positions.</li>
+      <li><b>H4 — Timing mismatch.</b> The median age at first second-contract eligibility falls within one year of the median age at production decline.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>Limitations</h3>
+    <ul class="clean">
+      <li><b>Survivorship bias.</b> Famous RBs are the players who lasted, so they are unrepresentative of the typical career (Table 2).</li>
+      <li><b>Selection bias.</b> Brain bank samples over-represent symptomatic players, so CTE figures cannot be read as population rates.</li>
+      <li><b>Model simplification.</b> The physical model treats bodies as rigid, reports average rather than measured peak forces, ignores padding and multi-player tackles, and relies on an assumed contact-duration range.</li>
+      <li><b>Secondary sources.</b> Several figures come from journalism and analytics sites rather than peer-reviewed work.</li>
+      <li><b>Causation and era effects.</b> Workload–decline associations are confounded by age, talent, and scheme. Rule changes and the 2021 move from 16 to 17 games also complicate comparisons across decades.</li>
+    </ul>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">~2.57 yrs</div><div class="l">Avg RB career</div></div>
+    <div class="stat"><div class="v">24–26</div><div class="l">Peak season ages</div></div>
+    <div class="stat"><div class="v">2.5–15 kN</div><div class="l">Stopping force range</div></div>
+    <div class="stat"><div class="v">3.26 m</div><div class="l">Fall-equivalent per hit</div></div>
+    <div class="stat"><div class="v">345 / 376</div><div class="l">CTE in NFL donors</div></div>
+    <div class="stat"><div class="v">~1.3× / yr</div><div class="l">CTE odds increase</div></div>
+    <div class="stat"><div class="v">8th → 10th</div><div class="l">RB tag rank, 2011→2025</div></div>
+    <div class="stat"><div class="v">~4.3%</div><div class="l">RB tag share of cap, 2025</div></div>
+  </div>
+</section>
+
+<!-- ================= REFERENCES ================= -->
+<section class="sec" id="refs" data-title="References">
+  <h2>References</h2>
+  <div class="card">
+    <ol class="refs">
+      <li><span class="num">[1]</span><span><b>Statista / NFLPA.</b> Average length of NFL playing careers by position.</span></li>
+      <li><span class="num">[2]</span><span><b>Footballguys (2022).</b> Analysis of NFL running back career length and aging.</span></li>
+      <li><span class="num">[3]</span><span><b>Chicago Policy Review (2024, Apr. 29).</b> Bankrupt Ballcarriers? How NFL Policy Limits Running Back Earnings.</span></li>
+      <li><span class="num">[4]</span><span><b>Barnwell, B. (2023, Jul. 13).</b> Is the era of the star running back over? ESPN.</span></li>
+      <li><span class="num">[5]</span><span><b>Associated Press, via Fox Sports (2025, Sept. 1).</b> Depreciating value of NFL running back contracts dismays Hall of Famer Thurman Thomas.</span></li>
+      <li><span class="num">[6]</span><span><b>GiveMeSport (2024, Mar. 27).</b> Running Back Is the Most Unappreciated Position in the NFL.</span></li>
+      <li><span class="num">[7]</span><span><b>Weyand, P.G., et al. (2000).</b> Faster top running speeds are achieved with greater ground forces not more rapid leg movements. <i>Journal of Applied Physiology</i>.</span></li>
+      <li><span class="num">[8]</span><span><b>Crisco, J.J., et al. (2011).</b> Head impact exposure in collegiate football players. <i>Journal of Biomechanics</i>.</span></li>
+      <li><span class="num">[9]</span><span><b>Pellman, E.J., et al. (2003).</b> Concussion in professional football: reconstruction of game impacts and injuries. <i>Neurosurgery</i>.</span></li>
+      <li><span class="num">[10]</span><span><b>Boston University CTE Center (2023, Feb. 6).</b> Researchers find CTE in 345 of 376 former NFL players studied. BU Chobanian &amp; Avedisian School of Medicine.</span></li>
+      <li><span class="num">[11]</span><span><b>Selection bias analysis (2023).</b> Relationship between level of American football playing and diagnosis of chronic traumatic encephalopathy. PMC9989358.</span></li>
+      <li><span class="num">[12]</span><span><b>Mez, J., et al. (2020).</b> Duration of American football play and chronic traumatic encephalopathy. <i>Annals of Neurology</i>.</span></li>
+      <li><span class="num">[13]</span><span><b>Daneshvar, D.H., et al. (2023).</b> Leveraging football accelerometer data to quantify associations between repetitive head impacts and chronic traumatic encephalopathy in males. <i>Nature Communications</i>. Summary: NIH Research Matters.</span></li>
+      <li><span class="num">[14]</span><span><b>Grashow, R., et al. (2024).</b> Perceived chronic traumatic encephalopathy and suicidality in former professional football players. <i>JAMA Neurology</i>. doi:10.1001/jamaneurol.2024.3083</span></li>
+      <li><span class="num">[15]</span><span><b>Review (2018).</b> Chronic traumatic encephalopathy in professional American football players: where are we now? PMC6018081.</span></li>
+      <li><span class="num">[16]</span><span><b>Pro-Football-Reference.com.</b> Career and season rushing data.</span></li>
+      <li><span class="num">[17]</span><span><b>nflverse / nfl-data-py.</b> Open-source NFL play-by-play, roster, and seasonal data.</span></li>
+      <li><span class="num">[18]</span><span><b>Over The Cap.</b> Positional contract and cap data.</span></li>
+      <li><span class="num">[19]</span><span><b>Schatz, A. Football Outsiders.</b> The "Curse of 370."</span></li>
+    </ol>
+  </div>
+  <div class="card">
+    <div class="rowhead"><h3>Raw Data Export (CSV)</h3><button class="btn" id="dlBtn">Download CSV</button></div>
+    <p class="cap">Download and open the file in Excel, or copy blocks into Google Sheets. Modeled rows are computed from the assumptions in Methods.</p>
+<pre id="csv">--- CAREER LENGTH ---
+Position,Avg_Career_Seasons
+RB,2.57
+League_Avg,3.30
+QB,4.44
+K/P,4.87
+
+--- STOPPING FORCE 95kg @ 8 m/s (modeled) ---
+Contact_s,Avg_Force_N,Avg_Force_lbf,Peak_HalfSine_N
+0.05,15200,3417,23876
+0.10,7600,1709,11938
+0.15,5067,1139,7959
+0.20,3800,854,5969
+0.25,3040,683,4775
+0.30,2533,570,3979
+
+--- KINETIC ENERGY 95kg (modeled) ---
+Velocity_ms,Velocity_mph,KE_J,Drop_Height_m
+5,11.2,1188,1.27
+6,13.4,1710,1.83
+7,15.7,2328,2.50
+8,17.9,3040,3.26
+9,20.1,3848,4.13
+
+--- DECADE MAX CARRIES ---
+Decade,Max_Carries,Player,Year
+1980s,407,James Wilder,1984
+1990s,410,Jamal Anderson,1998
+2000s,416,Larry Johnson,2006
+2010s,392,DeMarco Murray,2014
+2020s,378,Derrick Henry,2020
+
+--- FRANCHISE TAG ---
+Year,RB_Tag_USD_M,Rank_of_11,Salary_Cap_USD_M,Tag_Pct_of_Cap
+2011,9.6,8,120.4,8.0
+2025,12.0,10,279.2,4.3
+
+--- CAREER RUSHERS ---
+Player,First,Last,Seasons,Att,Yds,YPC
+Emmitt Smith,1990,2004,15,4409,18355,4.2
+Walter Payton,1975,1987,13,3838,16726,4.4
+Frank Gore,2005,2020,16,3735,16000,4.3
+Barry Sanders,1989,1998,10,3062,15269,5.0
+Adrian Peterson,2007,2021,15,3230,14918,4.6
+Curtis Martin,1995,2005,11,3518,14101,4.0
+LaDainian Tomlinson,2001,2011,11,3174,13684,4.3
+Jerome Bettis,1993,2005,13,3479,13662,3.9
+Eric Dickerson,1983,1993,11,2996,13259,4.4</pre>
+  </div>
+</section>
+
+<div class="pager"><button class="btn" id="prevBtn"></button><button class="btn" id="nextBtn"></button></div>
+</main>
+
+<footer>NFL RB Career Longevity · Biomechanics, Neurology &amp; Economics · 2026 · 19 Sources</footer>
+
+<script>
+(function () {
+  const G = 9.81;
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString();
+  const hasChart = !!window.Chart;
+
+  if (hasChart) {
+    const d = Chart.defaults;
+    d.font.family = 'ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif';
+    d.font.size = 11;
+    d.color = '#6b7280';
+    d.borderColor = '#374151';
+    d.maintainAspectRatio = false;
+    d.plugins.legend.labels.color = '#9ca3af';
+    d.plugins.legend.labels.boxWidth = 12;
+    Object.assign(d.plugins.tooltip, { backgroundColor: '#111827', borderColor: '#374151', borderWidth: 1, titleColor: '#9ca3af', bodyColor: '#e5e7eb', padding: 10 });
+  }
+
+  const ax = (title, extra) => Object.assign({
+    title: { display: !!title, text: title, color: '#6b7280', font: { size: 10 } },
+    grid: { color: '#374151' },
+    border: { dash: [3, 3], color: '#374151' },
+    ticks: { color: '#6b7280' }
+  }, extra || {});
+  const xCat = (title) => ({ title: { display: !!title, text: title, color: '#6b7280', font: { size: 10 } }, grid: { display: false }, border: { color: '#374151' }, ticks: { color: '#9ca3af' } });
+
+  function mk(id, cfg) {
+    const el = $(id);
+    if (!hasChart) {
+      const w = el.parentElement;
+      w.style.height = 'auto';
+      w.innerHTML = '<div class="fallback">Charts need an internet connection to load Chart.js. All tables and data remain available.</div>';
+      return null;
+    }
+    return new Chart(el, cfg);
+  }
+
+  // ---------- Static computed tables ----------
+  const M0 = 95, V0 = 8;
+  $('forceTable').innerHTML = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30].map(dt => {
+    const F = M0 * V0 / dt;
+    return `<tr><td class="n">${dt.toFixed(2)}</td><td class="n hi">${fmt(F)}</td><td class="n">${fmt(F / 4.448)}</td><td class="n">${fmt(F * Math.PI / 2)}</td><td class="n">${(F / (M0 * G)).toFixed(1)}×</td></tr>`;
+  }).join('');
+  $('keTable').innerHTML = [5, 6, 7, 8, 9].map(v => {
+    const ke = 0.5 * M0 * v * v, h = v * v / (2 * G);
+    return `<tr><td class="n">${v}</td><td class="n">${(v * 2.237).toFixed(1)}</td><td class="n hi">${fmt(ke)}</td><td class="n hi">${h.toFixed(2)}</td><td class="n">${(h * 3.281).toFixed(1)}</td></tr>`;
+  }).join('');
+
+  // ---------- Chart initializers (lazy, per tab) ----------
+  let forceChart = null;
+  const dtFine = [];
+  for (let t = 0.05; t <= 0.3001; t += 0.025) dtFine.push(+t.toFixed(3));
+
+  const INIT = {
+    intro() {
+      mk('figPos', {
+        type: 'bar',
+        data: { labels: ['RB', 'League avg', 'QB', 'K/P'], datasets: [{ data: [2.57, 3.30, 4.44, 4.87], backgroundColor: ['#9ca3af', '#374151', '#4b5563', '#4b5563'], borderRadius: 3 }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.raw} seasons` } } }, scales: { y: ax('Avg career (seasons)', { beginAtZero: true, max: 6 }), x: xCat() } }
+      });
+    },
+    longevity() {
+      mk('figAge', {
+        type: 'line',
+        data: { labels: [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32], datasets: [{ label: 'Production index (illustrative)', data: [55, 72, 85, 95, 100, 98, 88, 72, 55, 38, 25, 15], borderColor: '#9ca3af', backgroundColor: 'rgba(107,114,128,0.15)', fill: true, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#9ca3af', tension: 0.35 }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { title: c => `Age ${c[0].label}`, label: c => `Index: ${c.raw}` } } }, scales: { y: ax('Index (peak = 100)', { min: 0, max: 110 }), x: ax('Player age') } }
+      });
+    },
+    biomech() {
+      forceChart = mk('figForce', {
+        type: 'line',
+        data: {
+          labels: dtFine.map(t => t.toFixed(3)),
+          datasets: [
+            { label: 'Average force (N)', data: [], borderColor: '#d1d5db', backgroundColor: '#d1d5db', borderWidth: 2, pointRadius: 2, tension: 0.3 },
+            { label: 'Estimated peak, half-sine (N)', data: [], borderColor: '#6b7280', backgroundColor: '#6b7280', borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0, tension: 0.3 }
+          ]
+        },
+        options: { interaction: { mode: 'index', intersect: false }, plugins: { tooltip: { callbacks: { title: c => `Δt = ${c[0].label} s`, label: c => `${c.dataset.label}: ${fmt(c.raw)}` } } }, scales: { y: ax('Force (N)', { beginAtZero: true }), x: ax('Contact duration Δt (s)') } }
+      });
+      mk('figSeason', {
+        type: 'bar',
+        data: { labels: ['200', '250', '300', '345 (Barkley ’24)', '416 (L. Johnson ’06)'], datasets: [{ data: [200, 250, 300, 345, 416].map(c => c * 1.71), backgroundColor: ['#374151', '#4b5563', '#4b5563', '#6b7280', '#9ca3af'], borderRadius: 3 }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${fmt(c.raw)} kJ` } } }, scales: { y: ax('Energy per season (kJ)', { beginAtZero: true }), x: xCat('Carries in season') } }
+      });
+      const ins = ['mIn', 'vIn', 'tIn', 'cIn'].map($);
+      const calc = () => {
+        const m = +$('mIn').value, v = +$('vIn').value, dt = +$('tIn').value, c = +$('cIn').value;
+        const p = m * v, ke = 0.5 * m * v * v, F = p / dt;
+        $('mOut').textContent = `${m} kg (${Math.round(m * 2.2046)} lb)`;
+        $('vOut').textContent = `${v.toFixed(1)} m/s (${(v * 2.237).toFixed(1)} mph)`;
+        $('tOut').textContent = `${dt.toFixed(2)} s`;
+        $('cOut').textContent = c;
+        $('rP').textContent = fmt(p);
+        $('rKE').textContent = fmt(ke);
+        $('rF').textContent = fmt(F);
+        $('rFpk').textContent = fmt(F * Math.PI / 2);
+        $('rBW').textContent = (F / (m * G)).toFixed(1) + '×';
+        $('rH').textContent = (v * v / (2 * G)).toFixed(2);
+        $('rSeason').textContent = (c * ke / 1e6).toFixed(2) + ' MJ';
+        if (forceChart) {
+          forceChart.data.datasets[0].data = dtFine.map(t => p / t);
+          forceChart.data.datasets[1].data = dtFine.map(t => p / t * Math.PI / 2);
+          forceChart.update('none');
+        }
+      };
+      ins.forEach(i => i.addEventListener('input', calc));
+      calc();
+    },
+    workload() {
+      mk('figDecade', {
+        type: 'bar',
+        data: { labels: ['1980s', '1990s', '2000s', '2010s', '2020s*'], datasets: [{ data: [407, 410, 416, 392, 378], backgroundColor: ['#4b5563', '#6b7280', '#9ca3af', '#4b5563', '#374151'], borderRadius: 3 }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.raw} carries` } } }, scales: { y: ax('Carries', { min: 300, max: 430 }), x: xCat() } }
+      });
+      const seasons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const inj = mk('figInjury', {
+        type: 'line',
+        data: {
+          labels: seasons,
+          datasets: [
+            { label: 'Cumulative probability', data: [], borderColor: '#d1d5db', backgroundColor: 'rgba(156,163,175,0.15)', fill: true, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#d1d5db', tension: 0.3 },
+            { label: '50% threshold', data: seasons.map(() => 50), borderColor: '#6b7280', borderDash: [4, 4], borderWidth: 1, pointRadius: 0, fill: false }
+          ]
+        },
+        options: { interaction: { mode: 'index', intersect: false }, plugins: { tooltip: { callbacks: { title: c => `Season ${c[0].label}`, label: c => `${c.dataset.label}: ${(+c.raw).toFixed(1)}%` } } }, scales: { y: ax('Cumulative probability (%)', { min: 0, max: 100 }), x: ax('Season number') } }
+      });
+      const upd = () => {
+        const p = +$('pIn').value / 100;
+        const vals = seasons.map(n => 100 * (1 - Math.pow(1 - p, n)));
+        $('pOut').textContent = `${Math.round(p * 100)}%`;
+        const cross = seasons.find((n, i) => vals[i] >= 50);
+        $('pRead').textContent = cross
+          ? `At p = ${Math.round(p * 100)}%, cumulative risk passes 50% in season ${cross} (${vals[2].toFixed(1)}% by season 3).`
+          : `At p = ${Math.round(p * 100)}%, cumulative risk stays below 50% through season 10.`;
+        if (inj) { inj.data.datasets[0].data = vals; inj.update('none'); }
+      };
+      $('pIn').addEventListener('input', upd);
+      upd();
+    },
+    neuro() {
+      const yrs = [0, 2, 4, 6, 8, 10, 12, 14];
+      mk('figCTE', {
+        type: 'line',
+        data: { labels: yrs, datasets: [{ label: 'Relative odds', data: yrs.map(y => +Math.pow(2, y / 2.6).toFixed(2)), borderColor: '#d1d5db', backgroundColor: 'rgba(156,163,175,0.12)', fill: true, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#d1d5db', tension: 0.3 }] },
+        options: { plugins: { legend: { display: false }, tooltip: { callbacks: { title: c => `${c[0].label} years played`, label: c => `${c.raw}× baseline odds` } } }, scales: { y: ax('Odds multiplier (vs. 0 years)', { beginAtZero: true }), x: ax('Years of football played') } }
+      });
+    },
+    econ() {
+      mk('figTag', {
+        type: 'bar',
+        data: { labels: ['2011', '2025'], datasets: [{ data: [8.0, 4.3], backgroundColor: ['#9ca3af', '#4b5563'], borderRadius: 3, maxBarThickness: 90 }] },
+        options: { indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.raw}% of salary cap` } } }, scales: { x: ax('RB franchise tag as % of salary cap', { beginAtZero: true, max: 10 }), y: xCat() } }
+      });
+    }
+  };
+
+  // ---------- Tabs ----------
+  const secs = [...document.querySelectorAll('.sec')];
+  const bar = $('tabBar'), prev = $('prevBtn'), next = $('nextBtn');
+  const done = {};
+  let cur = 0;
+  secs.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab';
+    b.textContent = s.dataset.title;
+    b.onclick = () => show(i);
+    bar.appendChild(b);
+  });
+  function show(i, scroll = true) {
+    cur = i;
+    secs.forEach((s, j) => s.classList.toggle('active', j === i));
+    [...bar.children].forEach((b, j) => b.classList.toggle('active', j === i));
+    prev.disabled = i === 0;
+    next.disabled = i === secs.length - 1;
+    prev.textContent = i > 0 ? '← ' + secs[i - 1].dataset.title : '←';
+    next.textContent = i < secs.length - 1 ? secs[i + 1].dataset.title + ' →' : '→';
+    const id = secs[i].id;
+    if (!done[id] && INIT[id]) { done[id] = true; INIT[id](); }
+    if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  prev.onclick = () => cur > 0 && show(cur - 1);
+  next.onclick = () => cur < secs.length - 1 && show(cur + 1);
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' && cur < secs.length - 1) show(cur + 1);
+    if (e.key === 'ArrowLeft' && cur > 0) show(cur - 1);
+  });
+
+  // ---------- CSV download ----------
+  $('dlBtn').onclick = () => {
+    const blob = new Blob([$('csv').textContent], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'rb_longevity_data.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+
+  show(0, false);
+})();
+</script>
+</body>
+</html>
